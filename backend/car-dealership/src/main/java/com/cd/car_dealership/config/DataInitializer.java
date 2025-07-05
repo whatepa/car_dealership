@@ -1,7 +1,9 @@
 package com.cd.car_dealership.config;
 
 import com.cd.car_dealership.model.Car;
+import com.cd.car_dealership.model.User;
 import com.cd.car_dealership.repository.CarRepository;
+import com.cd.car_dealership.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -14,11 +16,19 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private CarRepository carRepository;
     
+    @Autowired
+    private UserRepository userRepository;
+    
     @Override
     public void run(String... args) throws Exception {
         // Check if data already exists
         if (carRepository.count() == 0) {
             initializeData();
+        }
+        
+        // Initialize admin user if not exists
+        if (userRepository.count() == 0) {
+            initializeUsers();
         }
     }
     
@@ -47,5 +57,11 @@ public class DataInitializer implements CommandLineRunner {
         carRepository.save(car10);
         
         System.out.println("Sample data initialized successfully!");
+    }
+    
+    private void initializeUsers() {
+        User admin = new User("admin", "admin123", "ADMIN");
+        userRepository.save(admin);
+        System.out.println("Admin user initialized successfully!");
     }
 } 

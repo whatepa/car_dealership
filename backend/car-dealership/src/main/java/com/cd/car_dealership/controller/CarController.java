@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,6 +37,7 @@ public class CarController {
     
     // Create new car
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CarDTO> createCar(@RequestBody CarDTO carDTO) {
         CarDTO createdCar = carService.createCar(carDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCar);
@@ -43,6 +45,7 @@ public class CarController {
     
     // Update car
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CarDTO> updateCar(@PathVariable Long id, @RequestBody CarDTO carDTO) {
         Optional<CarDTO> updatedCar = carService.updateCar(id, carDTO);
         return updatedCar.map(ResponseEntity::ok)
@@ -51,6 +54,7 @@ public class CarController {
     
     // Delete car
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCar(@PathVariable Long id) {
         boolean deleted = carService.deleteCar(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
