@@ -31,8 +31,8 @@ function App() {
       const res = await fetch("http://localhost:8080/api/cars");
       const data = await res.json();
       setCars(data);
-    } catch (error) {
-      console.error("Error fetching cars:", error);
+    } catch {
+      console.error("Error fetching cars");
     } finally {
       setLoading(false);
     }
@@ -52,8 +52,8 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       });
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch {
+      console.error("Logout error");
     } finally {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -78,12 +78,12 @@ function App() {
       } else {
         alert("Error deleting car");
       }
-    } catch (error) {
+    } catch {
       alert("Network error");
     }
   };
 
-  const handleCarSubmit = (car) => {
+  const handleCarSubmit = () => {
     setShowCarForm(false);
     setEditingCar(null);
     fetchCars();
@@ -91,7 +91,10 @@ function App() {
 
   const handleEditCar = (car) => {
     setEditingCar(car);
-    setShowCarForm(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCar(null);
   };
 
   const filteredCars = cars
@@ -110,8 +113,8 @@ function App() {
     });
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="p-4 min-h-screen bg-gray-100">
+      <div className="mx-auto max-w-4xl">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Car Dealership</h1>
           <div className="flex gap-2">
@@ -123,14 +126,14 @@ function App() {
                 {user.role === "ADMIN" && (
                   <button
                     onClick={() => setShowCarForm(true)}
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
                   >
                     Add Car
                   </button>
                 )}
                 <button
                   onClick={handleLogout}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
                 >
                   Logout
                 </button>
@@ -138,25 +141,38 @@ function App() {
             ) : (
               <button
                 onClick={() => setShowLogin(true)}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
               >
                 Admin Login
               </button>
             )}
           </div>
         </div>
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
+
+        {showLogin && <LoginForm onLogin={handleLogin} />}
+
+        {showCarForm && (
+          <CarForm
+            car={null}
+            onSubmit={handleCarSubmit}
+            onCancel={() => {
+              setShowCarForm(false);
+            }}
+          />
+        )}
+
+        <div className="flex flex-col gap-4 mb-6 md:flex-row">
           <input
             type="text"
             placeholder="Search brand/model..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="p-2 border rounded w-full md:w-1/2"
+            className="p-2 w-full rounded border md:w-1/2"
           />
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="p-2 border rounded w-full md:w-1/2"
+            className="p-2 w-full rounded border md:w-1/2"
           >
             <option value="">Sort by...</option>
             <option value="price-asc">Price ascending</option>
@@ -173,45 +189,53 @@ function App() {
               <div className="text-center">No listings found.</div>
             ) : (
               filteredCars.map((car) => (
-                <div
-                  key={car.id}
-                  className="bg-white rounded shadow p-4 flex flex-col md:flex-row md:items-center gap-4"
-                >
-                  <div className="flex-1">
-                    <div className="font-bold text-lg">
-                      {car.brand} {car.model}
-                    </div>
-                    <div>
-                      Production Year: <span className="font-medium">{car.productionYear}</span>
-                    </div>
-                    <div>
-                      Price: <span className="font-medium">${car.price}</span>
-                    </div>
-                    <div>
-                      Fuel Type: <span className="font-medium">{car.fuelType}</span>
-                    </div>
-                    <div>
-                      Mileage: <span className="font-medium">{car.mileage} km</span>
-                    </div>
-                    <div>
-                      Engine Capacity: <span className="font-medium">{car.engineCapacity} L</span>
-                    </div>
-                  </div>
-                  {user && user.role === "ADMIN" && (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleEditCar(car)}
-                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteCar(car.id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                <div key={car.id} className="p-4 bg-white rounded shadow">
+                  {editingCar && editingCar.id === car.id ? (
+
+                    <CarForm car={car} onSubmit={handleCarSubmit} onCancel={handleCancelEdit} />
+                  ) : (
+
+                    <>
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="text-lg font-bold">
+                          {car.brand} {car.model}
+                        </div>
+                        {user && user.role === "ADMIN" && (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditCar(car)}
+                              className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteCar(car.id)}
+                              className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm md:grid-cols-3">
+                        <div>
+                          Production Year: <span className="font-medium">{car.productionYear}</span>
+                        </div>
+                        <div>
+                          Price: <span className="font-medium">${car.price}</span>
+                        </div>
+                        <div>
+                          Fuel Type: <span className="font-medium">{car.fuelType}</span>
+                        </div>
+                        <div>
+                          Mileage: <span className="font-medium">{car.mileage} km</span>
+                        </div>
+                        <div>
+                          Engine Capacity:{" "}
+                          <span className="font-medium">{car.engineCapacity} L</span>
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
               ))
@@ -219,17 +243,6 @@ function App() {
           </div>
         )}
       </div>
-      {showLogin && <LoginForm onLogin={handleLogin} />}
-      {showCarForm && (
-        <CarForm
-          car={editingCar}
-          onSubmit={handleCarSubmit}
-          onCancel={() => {
-            setShowCarForm(false);
-            setEditingCar(null);
-          }}
-        />
-      )}
     </div>
   );
 }

@@ -73,71 +73,75 @@ const CarForm = ({ car, onSubmit, onCancel }) => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">{car ? "Edit Car" : "Add New Car"}</h2>
+  const isInlineEdit = car && car.id;
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Brand</label>
+  return (
+    <div className={`bg-white rounded-lg shadow-md ${isInlineEdit ? "p-4" : "p-6 mb-6"}`}>
+      <h2 className={`font-bold text-center ${isInlineEdit ? "mb-4 text-lg" : "mb-6 text-2xl"}`}>
+        {car ? "Edit Car" : "Add New Car"}
+      </h2>
+
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className={isInlineEdit ? "mb-3" : "mb-4"}>
+            <label className="block mb-1 text-sm font-medium">Brand</label>
             <input
               type="text"
               name="brand"
               value={formData.brand}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="p-2 w-full rounded border"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Model</label>
+          <div className={isInlineEdit ? "mb-3" : "mb-4"}>
+            <label className="block mb-1 text-sm font-medium">Model</label>
             <input
               type="text"
               name="model"
               value={formData.model}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="p-2 w-full rounded border"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Production Year</label>
+          <div className={isInlineEdit ? "mb-3" : "mb-4"}>
+            <label className="block mb-1 text-sm font-medium">Production Year</label>
             <input
               type="number"
               name="productionYear"
               value={formData.productionYear}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="p-2 w-full rounded border"
               min="1900"
               max="2030"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Price</label>
+          <div className={isInlineEdit ? "mb-3" : "mb-4"}>
+            <label className="block mb-1 text-sm font-medium">Price</label>
             <input
               type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="p-2 w-full rounded border"
               min="0"
               step="0.01"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Fuel Type</label>
+          <div className={isInlineEdit ? "mb-3" : "mb-4"}>
+            <label className="block mb-1 text-sm font-medium">Fuel Type</label>
             <select
               name="fuelType"
               value={formData.fuelType}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="p-2 w-full rounded border"
               required
             >
               <option value="">Select fuel type</option>
@@ -148,51 +152,51 @@ const CarForm = ({ car, onSubmit, onCancel }) => {
             </select>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Mileage (km)</label>
+          <div className={isInlineEdit ? "mb-3" : "mb-4"}>
+            <label className="block mb-1 text-sm font-medium">Mileage (km)</label>
             <input
               type="number"
               name="mileage"
               value={formData.mileage}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="p-2 w-full rounded border"
               min="0"
               required
             />
           </div>
+        </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-1">Engine Capacity (L)</label>
-            <input
-              type="number"
-              name="engineCapacity"
-              value={formData.engineCapacity}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              min="0"
-              step="0.1"
-              required
-            />
-          </div>
+        <div className={isInlineEdit ? "mb-4" : "mb-6"}>
+          <label className="block mb-1 text-sm font-medium">Engine Capacity (L)</label>
+          <input
+            type="number"
+            name="engineCapacity"
+            value={formData.engineCapacity}
+            onChange={handleChange}
+            className="p-2 w-full rounded border"
+            min="0"
+            step="0.1"
+            required
+          />
+        </div>
 
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50"
-            >
-              {loading ? "Saving..." : car ? "Update" : "Add"}
-            </button>
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex-1 px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 disabled:opacity-50"
+          >
+            {loading ? "Saving..." : car ? "Update" : "Add"}
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 px-4 py-2 text-gray-700 bg-gray-300 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
