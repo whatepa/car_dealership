@@ -37,34 +37,34 @@ const LoginForm = ({ onLogin }) => {
   };
 
   return (
-    <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-6 text-2xl font-bold text-center">Admin Login</h2>
+    <div className="p-6 mb-6 bg-zinc-800 rounded-lg shadow-md border border-zinc-700">
+      <h2 className="mb-6 text-2xl font-bold text-center text-white">Admin Login</h2>
 
       {error && (
-        <div className="p-3 mb-4 text-red-700 bg-red-100 rounded border border-red-400">
+        <div className="p-3 mb-4 text-red-300 bg-red-900 rounded border border-red-600">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700">Username</label>
+          <label className="block mb-2 text-sm font-bold text-zinc-300">Username</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="p-2 w-full rounded border border-gray-300 focus:outline-none focus:border-blue-500"
+            className="p-2 w-full rounded border border-zinc-600 bg-zinc-700 text-white focus:outline-none focus:border-blue-500"
             required
           />
         </div>
 
         <div className="mb-6">
-          <label className="block mb-2 text-sm font-bold text-gray-700">Password</label>
+          <label className="block mb-2 text-sm font-bold text-zinc-300">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-2 w-full rounded border border-gray-300 focus:outline-none focus:border-blue-500"
+            className="p-2 w-full rounded border border-zinc-600 bg-zinc-700 text-white focus:outline-none focus:border-blue-500"
             required
           />
         </div>
@@ -78,7 +78,7 @@ const LoginForm = ({ onLogin }) => {
         </button>
       </form>
 
-      <div className="mt-4 text-sm text-center text-gray-600">
+      <div className="mt-4 text-sm text-center text-zinc-400">
         <p>Demo credentials:</p>
         <p>Username: admin</p>
         <p>Password: admin123</p>

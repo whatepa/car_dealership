@@ -76,59 +76,67 @@ const CarForm = ({ car, onSubmit, onCancel }) => {
   const isInlineEdit = car && car.id;
 
   return (
-    <div className={`bg-white rounded-lg shadow-md ${isInlineEdit ? "p-4" : "p-6 mb-6"}`}>
-      <h2 className={`font-bold text-center ${isInlineEdit ? "mb-4 text-lg" : "mb-6 text-2xl"}`}>
+    <div
+      className={`bg-zinc-800 rounded-lg shadow-md border border-zinc-700 ${
+        isInlineEdit ? "p-4" : "p-6 mb-6"
+      }`}
+    >
+      <h2
+        className={`font-bold text-center text-white ${
+          isInlineEdit ? "mb-4 text-lg" : "mb-6 text-2xl"
+        }`}
+      >
         {car ? "Edit Car" : "Add New Car"}
       </h2>
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className={isInlineEdit ? "mb-3" : "mb-4"}>
-            <label className="block mb-1 text-sm font-medium">Brand</label>
+            <label className="block mb-1 text-sm font-medium text-white">Brand</label>
             <input
               type="text"
               name="brand"
               value={formData.brand}
               onChange={handleChange}
-              className="p-2 w-full rounded border"
+              className="p-2 w-full text-white rounded border border-zinc-600"
               required
             />
           </div>
 
           <div className={isInlineEdit ? "mb-3" : "mb-4"}>
-            <label className="block mb-1 text-sm font-medium">Model</label>
+            <label className="block mb-1 text-sm font-medium text-white">Model</label>
             <input
               type="text"
               name="model"
               value={formData.model}
               onChange={handleChange}
-              className="p-2 w-full rounded border"
+              className="p-2 w-full text-white rounded border border-zinc-600"
               required
             />
           </div>
 
           <div className={isInlineEdit ? "mb-3" : "mb-4"}>
-            <label className="block mb-1 text-sm font-medium">Production Year</label>
+            <label className="block mb-1 text-sm font-medium text-white">Production Year</label>
             <input
               type="number"
               name="productionYear"
               value={formData.productionYear}
               onChange={handleChange}
-              className="p-2 w-full rounded border"
+              className="p-2 w-full text-white rounded border border-zinc-600"
               min="1900"
-              max="2030"
+              max="2025"
               required
             />
           </div>
 
           <div className={isInlineEdit ? "mb-3" : "mb-4"}>
-            <label className="block mb-1 text-sm font-medium">Price</label>
+            <label className="block mb-1 text-sm font-medium text-white">Price</label>
             <input
               type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
-              className="p-2 w-full rounded border"
+              className="p-2 w-full text-white rounded border border-zinc-600"
               min="0"
               step="0.01"
               required
@@ -136,12 +144,12 @@ const CarForm = ({ car, onSubmit, onCancel }) => {
           </div>
 
           <div className={isInlineEdit ? "mb-3" : "mb-4"}>
-            <label className="block mb-1 text-sm font-medium">Fuel Type</label>
+            <label className="block mb-1 text-sm font-medium text-white">Fuel Type</label>
             <select
               name="fuelType"
               value={formData.fuelType}
               onChange={handleChange}
-              className="p-2 w-full rounded border"
+              className="p-2 w-full text-white rounded border border-zinc-600"
               required
             >
               <option value="">Select fuel type</option>
@@ -153,13 +161,13 @@ const CarForm = ({ car, onSubmit, onCancel }) => {
           </div>
 
           <div className={isInlineEdit ? "mb-3" : "mb-4"}>
-            <label className="block mb-1 text-sm font-medium">Mileage (km)</label>
+            <label className="block mb-1 text-sm font-medium text-white">Mileage (km)</label>
             <input
               type="number"
               name="mileage"
               value={formData.mileage}
               onChange={handleChange}
-              className="p-2 w-full rounded border"
+              className="p-2 w-full text-white rounded border border-zinc-600"
               min="0"
               required
             />
@@ -167,7 +175,7 @@ const CarForm = ({ car, onSubmit, onCancel }) => {
         </div>
 
         <div className={isInlineEdit ? "mb-4" : "mb-6"}>
-          <label className="block mb-1 text-sm font-medium">Engine Capacity (L)</label>
+          <label className="block mb-1 text-sm font-medium text-white">Engine Capacity (L)</label>
           <input
             type="number"
             name="engineCapacity"
@@ -191,7 +199,7 @@ const CarForm = ({ car, onSubmit, onCancel }) => {
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 px-4 py-2 text-gray-700 bg-gray-300 rounded hover:bg-gray-400"
+            className="flex-1 px-4 py-2 rounded text-zinc-700 bg-zinc-300 hover:bg-zinc-400"
           >
             Cancel
           </button>

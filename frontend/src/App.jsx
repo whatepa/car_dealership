@@ -113,14 +113,14 @@ function App() {
     });
 
   return (
-    <div className="p-4 min-h-screen bg-gray-100">
+    <div className="p-4 min-h-screen bg-zinc-900">
       <div className="mx-auto max-w-4xl">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Car Dealership</h1>
+          <h1 className="text-2xl font-bold text-white">Car Dealership</h1>
           <div className="flex gap-2">
             {user ? (
               <>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-zinc-300">
                   Welcome, {user.username} ({user.role})
                 </span>
                 {user.role === "ADMIN" && (
@@ -182,22 +182,20 @@ function App() {
           </select>
         </div>
         {loading ? (
-          <div className="text-center">Loading...</div>
+          <div className="text-center text-white">Loading...</div>
         ) : (
           <div className="grid gap-4">
             {filteredCars.length === 0 ? (
-              <div className="text-center">No listings found.</div>
+              <div className="text-center text-white">No listings found.</div>
             ) : (
               filteredCars.map((car) => (
-                <div key={car.id} className="p-4 bg-white rounded shadow">
+                <div key={car.id} className="p-4 rounded border shadow bg-zinc-800 border-zinc-700">
                   {editingCar && editingCar.id === car.id ? (
-
                     <CarForm car={car} onSubmit={handleCarSubmit} onCancel={handleCancelEdit} />
                   ) : (
-
                     <>
                       <div className="flex justify-between items-start mb-3">
-                        <div className="text-lg font-bold">
+                        <div className="text-lg font-bold text-white">
                           {car.brand} {car.model}
                         </div>
                         {user && user.role === "ADMIN" && (
@@ -217,22 +215,23 @@ function App() {
                           </div>
                         )}
                       </div>
-                      <div className="grid grid-cols-2 gap-2 text-sm md:grid-cols-3">
+                      <div className="grid grid-cols-2 gap-2 text-sm text-zinc-300 md:grid-cols-3">
                         <div>
-                          Production Year: <span className="font-medium">{car.productionYear}</span>
+                          Production Year:{" "}
+                          <span className="font-medium text-white">{car.productionYear}</span>
                         </div>
                         <div>
-                          Price: <span className="font-medium">${car.price}</span>
+                          Price: <span className="font-medium text-white">${car.price}</span>
                         </div>
                         <div>
-                          Fuel Type: <span className="font-medium">{car.fuelType}</span>
+                          Fuel Type: <span className="font-medium text-white">{car.fuelType}</span>
                         </div>
                         <div>
-                          Mileage: <span className="font-medium">{car.mileage} km</span>
+                          Mileage: <span className="font-medium text-white">{car.mileage} km</span>
                         </div>
                         <div>
                           Engine Capacity:{" "}
-                          <span className="font-medium">{car.engineCapacity} L</span>
+                          <span className="font-medium text-white">{car.engineCapacity} L</span>
                         </div>
                       </div>
                     </>
