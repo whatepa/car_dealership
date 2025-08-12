@@ -3,6 +3,8 @@ package com.cd.car_dealership.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "cars")
@@ -39,7 +41,11 @@ public class Car {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Constructors
+    // New @OneToMany relationship with ImageInfo
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageInfo> imageGallery = new ArrayList<>();
+    
+
     public Car() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -56,8 +62,7 @@ public class Car {
         this.mileage = mileage;
         this.engineCapacity = engineCapacity;
     }
-    
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -136,6 +141,26 @@ public class Car {
     
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<ImageInfo> getImageGallery() {
+        return imageGallery;
+    }
+    
+    public void setImageGallery(List<ImageInfo> imageGallery) {
+        this.imageGallery = imageGallery;
+    }
+
+    // Helper methods for frontend compatibility
+    public String getMainImage() {
+        return imageGallery != null && !imageGallery.isEmpty() ? imageGallery.get(0).getImageUrl() : null;
+    }
+    
+    public List<String> getImageUrls() {
+        if (imageGallery == null) return new ArrayList<>();
+        return imageGallery.stream()
+                .map(ImageInfo::getImageUrl)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
     
     @PreUpdate

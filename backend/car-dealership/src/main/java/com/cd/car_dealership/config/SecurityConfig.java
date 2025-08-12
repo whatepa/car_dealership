@@ -2,6 +2,7 @@ package com.cd.car_dealership.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -33,14 +34,17 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 // Public endpoints
                 .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/cars").permitAll()
-                .requestMatchers("/api/cars/search").permitAll()
-                .requestMatchers("/api/cars/brands").permitAll()
-                .requestMatchers("/api/cars/fuel-types").permitAll()
-                .requestMatchers("/api/cars/{id}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/cars").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/cars/search").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/cars/brands").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/cars/fuel-types").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/cars/{id}").permitAll()
                 // Admin endpoints
-                .requestMatchers("/api/cars").hasRole("ADMIN")
-                .requestMatchers("/api/cars/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/cars").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/cars/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/cars/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/cars/{id}/gallery").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/cars/{id}/gallery").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
@@ -54,7 +58,9 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

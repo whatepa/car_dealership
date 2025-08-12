@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,31 +20,27 @@ public class CarController {
     
     @Autowired
     private CarService carService;
-    
-    // Get all cars
+
     @GetMapping
     public ResponseEntity<List<CarDTO>> getAllCars() {
         List<CarDTO> cars = carService.getAllCars();
         return ResponseEntity.ok(cars);
     }
-    
-    // Get car by ID
+
     @GetMapping("/{id}")
     public ResponseEntity<CarDTO> getCarById(@PathVariable Long id) {
         Optional<CarDTO> car = carService.getCarById(id);
         return car.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
-    // Create new car
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CarDTO> createCar(@RequestBody CarDTO carDTO) {
         CarDTO createdCar = carService.createCar(carDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCar);
     }
-    
-    // Update car
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CarDTO> updateCar(@PathVariable Long id, @RequestBody CarDTO carDTO) {
@@ -51,16 +48,14 @@ public class CarController {
         return updatedCar.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
-    // Delete car
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCar(@PathVariable Long id) {
         boolean deleted = carService.deleteCar(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
-    
-    // Search cars
+
     @GetMapping("/search")
     public ResponseEntity<List<CarDTO>> searchCars(
             @RequestParam(required = false) String brand,
@@ -84,18 +79,32 @@ public class CarController {
         );
         return ResponseEntity.ok(cars);
     }
-    
-    // Get all brands
+
     @GetMapping("/brands")
     public ResponseEntity<List<String>> getAllBrands() {
         List<String> brands = carService.getAllBrands();
         return ResponseEntity.ok(brands);
     }
-    
-    // Get all fuel types
+
     @GetMapping("/fuel-types")
     public ResponseEntity<List<String>> getAllFuelTypes() {
         List<String> fuelTypes = carService.getAllFuelTypes();
         return ResponseEntity.ok(fuelTypes);
+    }
+
+    @PostMapping("/{id}/gallery")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CarDTO> addImageToGallery(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        Optional<CarDTO> updatedCar = carService.addImageToGallery(id, file);
+        return updatedCar.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}/gallery")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CarDTO> removeImageFromGallery(@PathVariable Long id, @RequestParam("imageUrl") String imageUrl) {
+        Optional<CarDTO> updatedCar = carService.removeImageFromGallery(id, imageUrl);
+        return updatedCar.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 } 

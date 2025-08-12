@@ -2,6 +2,7 @@ package com.cd.car_dealership.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CarDTO {
     private Long id;
@@ -14,13 +15,13 @@ public class CarDTO {
     private Double engineCapacity;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
-    // Constructors
+    private List<String> imageGallery; // Keep as List<String> for frontend compatibility
+
     public CarDTO() {}
     
     public CarDTO(Long id, String brand, String model, Integer productionYear, 
                   BigDecimal price, String fuelType, Integer mileage, Double engineCapacity,
-                  LocalDateTime createdAt, LocalDateTime updatedAt) {
+                  LocalDateTime createdAt, LocalDateTime updatedAt, List<String> imageGallery) {
         this.id = id;
         this.brand = brand;
         this.model = model;
@@ -31,9 +32,9 @@ public class CarDTO {
         this.engineCapacity = engineCapacity;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.imageGallery = imageGallery;
     }
-    
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -112,5 +113,18 @@ public class CarDTO {
     
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public List<String> getImageGallery() {
+        return imageGallery;
+    }
+    
+    public void setImageGallery(List<String> imageGallery) {
+        this.imageGallery = imageGallery;
+    }
+    
+    // Helper method to get main image (first image in gallery)
+    public String getMainImage() {
+        return imageGallery != null && !imageGallery.isEmpty() ? imageGallery.get(0) : null;
     }
 } 

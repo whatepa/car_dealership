@@ -37,7 +37,7 @@ const LoginForm = ({ onLogin }) => {
   };
 
   return (
-    <div className="p-6 mb-6 bg-zinc-800 rounded-lg shadow-md border border-zinc-700">
+    <div className="p-6 mb-6 rounded-lg border shadow-md bg-zinc-800 border-zinc-700">
       <h2 className="mb-6 text-2xl font-bold text-center text-white">Admin Login</h2>
 
       {error && (
@@ -53,7 +53,7 @@ const LoginForm = ({ onLogin }) => {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="p-2 w-full rounded border border-zinc-600 bg-zinc-700 text-white focus:outline-none focus:border-blue-500"
+            className="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
             required
           />
         </div>
@@ -64,7 +64,7 @@ const LoginForm = ({ onLogin }) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-2 w-full rounded border border-zinc-600 bg-zinc-700 text-white focus:outline-none focus:border-blue-500"
+            className="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
             required
           />
         </div>
