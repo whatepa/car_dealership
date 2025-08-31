@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 export interface CarModel {
   id?: number;
@@ -20,7 +21,7 @@ export interface CarModel {
   providedIn: 'root',
 })
 export class Car {
-  private readonly baseUrl = 'http://localhost:8080/api/cars';
+  private readonly baseUrl = `${environment.apiUrl}/api/cars`;
 
   async list(): Promise<CarModel[]> {
     const response = await fetch(this.baseUrl);
