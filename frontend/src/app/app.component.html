@@ -1,0 +1,297 @@
+<div class="p-4 min-h-screen bg-zinc-900">
+  <div class="mx-auto max-w-4xl">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-white">Car Dealership</h1>
+      <div class="flex gap-2">
+        <div *ngIf="user; else loginButton">
+          <span class="text-sm text-zinc-300">
+            Welcome, {{ user.username }} ({{ user.role }})
+          </span>
+
+          <button
+            *ngIf="user.role === 'ADMIN'"
+            (click)="handleAddCar()"
+            [disabled]="isSubmitting"
+            class="px-4 py-2 ml-2 text-white bg-green-500 rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Add Car
+          </button>
+          <button
+            (click)="handleLogout()"
+            class="px-4 py-2 ml-2 text-white bg-red-500 rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+
+        <ng-template #loginButton>
+          <button
+            (click)="showLogin = true"
+            class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+          >
+            Admin Login
+          </button>
+        </ng-template>
+      </div>
+    </div>
+
+    <app-login-form *ngIf="showLogin" (onLogin)="handleLogin($event)"></app-login-form>
+
+    <div *ngIf="showCarForm && formKey === 0">
+      <app-car-form
+        [car]="null"
+        (onSubmit)="handleCarSubmit()"
+        (onCancel)="showCarForm = false"
+      ></app-car-form>
+    </div>
+
+    <div *ngIf="!isCarDetailView" class="flex flex-col gap-4 mb-6 md:flex-row">
+      <input
+        type="text"
+        placeholder="Search brand/model..."
+        [(ngModel)]="search"
+        class="p-2 w-full rounded border md:w-1/2"
+      />
+      <select [(ngModel)]="sort" class="p-2 w-full rounded border md:w-1/2">
+        <option value="">Sort by...</option>
+        <option value="price-asc">Price ascending</option>
+        <option value="price-desc">Price descending</option>
+        <option value="year-asc">Year ascending</option>
+        <option value="year-desc">Year descending</option>
+      </select>
+    </div>
+
+    <div *ngIf="loading" class="text-center text-white">Loading...</div>
+    <div *ngIf="updating && !loading" class="text-center text-white">Updating...</div>
+
+    <div *ngIf="isCarDetailView && selectedCar" class="mb-6">
+      <button
+        (click)="handleBackToList()"
+        class="flex gap-2 items-center px-4 py-2 mb-4 text-white bg-blue-500 rounded hover:bg-blue-600"
+      >
+        ← Back to listings
+      </button>
+
+      <div class="p-6 rounded-lg border shadow-md bg-zinc-800 border-zinc-700">
+        <div class="flex justify-between items-start mb-6">
+          <h2 class="mb-2 text-3xl font-bold text-white">
+            {{ selectedCar.brand }} {{ selectedCar.model }}
+          </h2>
+          <div class="text-2xl font-bold text-white">${{ selectedCar.price }}</div>
+        </div>
+
+        <!-- Images Gallery -->
+        <div class="mb-8">
+          <app-image-carousel
+            *ngIf="selectedCar.imageGallery && selectedCar.imageGallery.length > 0"
+            [images]="selectedCar.imageGallery"
+            [carId]="selectedCar.id"
+            [isAdmin]="user?.role === 'ADMIN'"
+            (onRemoveImage)="handleRemoveImage(selectedCar.id, $event)"
+            (onImageClick)="handleImageClick($event)"
+          ></app-image-carousel>
+
+          <div
+            *ngIf="!selectedCar.imageGallery || selectedCar.imageGallery.length === 0"
+            class="flex justify-center items-center h-64 rounded-lg bg-zinc-700"
+          >
+            <div class="text-center text-zinc-400">
+              <div>No images available</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specifications -->
+        <div class="mt-8">
+          <h3 class="mb-4 text-xl font-semibold text-white">Specifications</h3>
+          <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+            <div class="text-zinc-300">
+              <span class="font-medium">Production Year:</span>
+              <div class="text-white">{{ selectedCar.productionYear }}</div>
+            </div>
+            <div class="text-zinc-300">
+              <span class="font-medium">Fuel Type:</span>
+              <div class="text-white">{{ selectedCar.fuelType }}</div>
+            </div>
+            <div class="text-zinc-300">
+              <span class="font-medium">Mileage:</span>
+              <div class="text-white">{{ selectedCar.mileage }} km</div>
+            </div>
+            <div class="text-zinc-300">
+              <span class="font-medium">Engine Capacity:</span>
+              <div class="text-white">{{ selectedCar.engineCapacity }} L</div>
+            </div>
+            <div class="text-zinc-300">
+              <span class="font-medium">Transmission:</span>
+              <div class="text-white">{{ selectedCar.transmission }}</div>
+            </div>
+            <div class="text-zinc-300">
+              <span class="font-medium">Added:</span>
+              <div class="text-white">{{ selectedCar.createdAt | date : 'medium' }}</div>
+            </div>
+            <div class="text-zinc-300">
+              <span class="font-medium">Last Updated:</span>
+              <div class="text-white">{{ selectedCar.updatedAt | date : 'medium' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div *ngIf="selectedCar.description" class="mt-8">
+          <h3 class="mb-4 text-xl font-semibold text-white">Description</h3>
+          <p class="leading-relaxed text-zinc-300">{{ selectedCar.description }}</p>
+        </div>
+
+        <!-- Admin Controls -->
+        <div *ngIf="user && user.role === 'ADMIN'" class="flex gap-2 mt-8">
+          <button
+            (click)="handleEditCar(selectedCar); handleBackToList()"
+            class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+          >
+            Edit Car
+          </button>
+          <button
+            (click)="handleDeleteCar(selectedCar.id); handleBackToList()"
+            class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
+          >
+            Delete Car
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Car List View -->
+    <div *ngIf="!isCarDetailView && !loading && !updating" class="grid gap-4">
+      <div *ngIf="filteredCars.length === 0" class="text-center text-white">No listings found.</div>
+
+      <div
+        *ngFor="let car of filteredCars; trackBy: trackByCarId"
+        class="p-4 rounded border shadow bg-zinc-800 border-zinc-700"
+      >
+        <app-car-form
+          *ngIf="editingCar && editingCar.id === car.id"
+          [car]="car"
+          (onSubmit)="handleCarSubmit()"
+          (onCancel)="handleCancelEdit()"
+        ></app-car-form>
+
+        <div
+          *ngIf="!editingCar || editingCar.id !== car.id"
+          class="transition-colors cursor-pointer hover:bg-zinc-700 hover:rounded-md"
+          (click)="handleCarClick(car)"
+        >
+          <div class="flex gap-4">
+            <!-- Gallery on the left -->
+            <div class="flex-shrink-0 w-48">
+              <div *ngIf="car.imageGallery && car.imageGallery.length > 0">
+                <app-image-carousel
+                  [images]="car.imageGallery"
+                  [carId]="car.id"
+                  [isAdmin]="user?.role === 'ADMIN'"
+                  [showThumbnails]="false"
+                  (onRemoveImage)="handleRemoveImage(car.id, $event)"
+                  (onImageClick)="handleImageClick($event)"
+                ></app-image-carousel>
+              </div>
+
+              <div
+                *ngIf="carsWithImagesLoading.has(car.id)"
+                class="flex justify-center items-center w-48 h-36 rounded-lg bg-zinc-700"
+              >
+                <div class="text-center text-zinc-400">
+                  <div
+                    class="mx-auto mb-2 w-8 h-8 rounded-full border-b-2 border-blue-500 animate-spin"
+                  ></div>
+                  <div class="text-xs">Loading...</div>
+                </div>
+              </div>
+
+              <div
+                *ngIf="!car.imageGallery || car.imageGallery.length === 0"
+                class="flex justify-center items-center w-48 h-36 rounded-lg bg-zinc-700"
+              >
+                <div class="text-center text-zinc-400">
+                  <div class="text-xs">No images</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Car details -->
+            <div class="flex-1">
+              <div class="flex justify-between items-start mb-3">
+                <div class="text-lg font-bold text-white">{{ car.brand }} {{ car.model }}</div>
+
+                <div class="flex gap-4 items-center">
+                  <div class="text-lg font-bold text-white">${{ car.price }}</div>
+
+                  <div
+                    *ngIf="user && user.role === 'ADMIN'"
+                    class="flex gap-2"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <button
+                      (click)="handleEditCar(car)"
+                      class="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      (click)="handleDeleteCar(car.id)"
+                      class="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-sm text-zinc-300 md:grid-cols-3">
+                <div>
+                  Production Year:
+                  <span class="font-medium text-white">{{ car.productionYear }}</span>
+                </div>
+
+                <div>
+                  Fuel Type: <span class="font-medium text-white">{{ car.fuelType }}</span>
+                </div>
+                <div>
+                  Mileage: <span class="font-medium text-white">{{ car.mileage }} km</span>
+                </div>
+                <div>
+                  Engine Capacity:
+                  <span class="font-medium text-white">{{ car.engineCapacity }} L</span>
+                </div>
+                <div>
+                  Transmission:
+                  <span class="font-medium text-white">{{ car.transmission }}</span>
+                </div>
+                <div>
+                  Added:
+                  <span class="font-medium text-white">{{ car.createdAt | date : 'short' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noImages>
+  <div
+    class="flex flex-shrink-0 justify-center items-center w-32 h-24 rounded border border-zinc-600 bg-zinc-700"
+  >
+    <div class="text-center text-zinc-400">
+      <div class="text-xs">No images</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #noGallery>
+  <div class="flex justify-center items-center h-64 rounded-lg bg-zinc-700">
+    <div class="text-center text-zinc-400">
+      <div>No images available</div>
+    </div>
+  </div>
+</ng-template>

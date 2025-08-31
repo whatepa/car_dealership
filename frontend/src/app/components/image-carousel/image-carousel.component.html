@@ -1,0 +1,143 @@
+<!-- Render only if images exist -->
+<div *ngIf="shouldRender" class="mt-4">
+  <!-- Main Carousel -->
+  <div class="relative">
+    <div class="overflow-hidden relative h-36 rounded-lg bg-zinc-700">
+      <img
+        [src]="images()[currentIndex]"
+        [alt]="'Car image ' + (currentIndex + 1)"
+        class="object-contain w-full h-full cursor-pointer"
+        (click)="handleImageClick(images()[currentIndex]); $event.stopPropagation()"
+      />
+
+      <!-- Navigation buttons -->
+      <div *ngIf="shouldShowNavigation">
+        <button
+          (click)="prevImage(); $event.stopPropagation()"
+          class="flex absolute left-2 top-1/2 justify-center items-center w-8 h-8 text-white bg-black bg-opacity-50 rounded-full transition-opacity transform -translate-y-1/2 hover:bg-opacity-75"
+          title="Previous image"
+        >
+          ‹
+        </button>
+        <button
+          (click)="nextImage(); $event.stopPropagation()"
+          class="flex absolute right-2 top-1/2 justify-center items-center w-8 h-8 text-white bg-black bg-opacity-50 rounded-full transition-opacity transform -translate-y-1/2 hover:bg-opacity-75"
+          title="Next image"
+        >
+          ›
+        </button>
+      </div>
+
+      <!-- Remove button for admin -->
+      <button
+        *ngIf="isAdmin()"
+        (click)="handleRemoveImage(images()[currentIndex]); $event.stopPropagation()"
+        class="flex absolute top-2 right-2 justify-center items-center w-6 h-6 text-sm text-white bg-red-500 rounded-full transition-colors hover:bg-red-600"
+        title="Remove image"
+      >
+        ×
+      </button>
+    </div>
+
+    <!-- Image counter -->
+    <div
+      class="absolute bottom-2 left-2 px-2 py-1 text-sm text-white bg-black bg-opacity-50 rounded"
+    >
+      {{ currentIndex + 1 }} / {{ images().length }}
+    </div>
+  </div>
+
+  <!-- Thumbnail navigation -->
+  <div
+    *ngIf="shouldShowNavigation && showThumbnails()"
+    class="flex overflow-x-auto gap-1 justify-center mt-2"
+  >
+    <button
+      *ngFor="let imageUrl of images(); let index = index"
+      (click)="handleThumbnailClick(index, $event); $event.stopPropagation()"
+      [class]="
+        'flex-shrink-0 w-12 h-8 rounded border-2 transition-all ' +
+        (index === currentIndex
+          ? 'border-blue-500 opacity-100'
+          : 'border-zinc-600 opacity-60 hover:bg-opacity-80')
+      "
+    >
+      <img
+        [src]="imageUrl"
+        [alt]="'Thumbnail ' + (index + 1)"
+        class="object-cover w-full h-full rounded"
+      />
+    </button>
+  </div>
+
+  <!-- Modal for full-size image -->
+  <div
+    *ngIf="selectedImage"
+    class="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-75"
+    (click)="handleModalClose(); $event.stopPropagation()"
+  >
+    <div class="flex flex-col p-6 w-full max-w-7xl h-full max-h-full">
+      <!-- Main image with navigation -->
+      <div class="relative flex-1 mb-4 min-h-0">
+        <div class="overflow-auto relative h-full rounded-lg bg-zinc-800">
+          <div class="flex justify-center items-center p-4 h-full min-h-full">
+            <img
+              [src]="images()[currentIndex]"
+              [alt]="'Car image ' + (currentIndex + 1)"
+              class="object-contain w-full h-full"
+              (click)="handleModalImageClick($event)"
+            />
+          </div>
+
+          <!-- Navigation buttons -->
+          <div *ngIf="shouldShowNavigation">
+            <button
+              (click)="prevImage(); $event.stopPropagation()"
+              class="flex absolute left-2 top-1/2 justify-center items-center w-12 h-12 text-white bg-black bg-opacity-50 rounded-full transition-opacity transform -translate-y-1/2 hover:bg-opacity-75"
+              title="Previous image"
+            >
+              ‹
+            </button>
+            <button
+              (click)="nextImage(); $event.stopPropagation()"
+              class="flex absolute right-2 top-1/2 justify-center items-center w-12 h-12 text-white bg-black bg-opacity-50 rounded-full transition-opacity transform -translate-y-1/2 hover:bg-opacity-75"
+              title="Next image"
+            >
+              ›
+            </button>
+          </div>
+
+          <!-- Image counter -->
+          <div
+            class="absolute bottom-2 left-2 px-3 py-1 text-sm text-white bg-black bg-opacity-50 rounded"
+          >
+            {{ currentIndex + 1 }} / {{ images().length }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Thumbnail navigation -->
+      <div
+        *ngIf="shouldShowNavigation"
+        class="flex overflow-x-auto flex-shrink-0 gap-2 justify-center"
+      >
+        <button
+          *ngFor="let imageUrl of images(); let index = index"
+          (click)="handleThumbnailClick(index, $event); $event.stopPropagation()"
+          [class]="
+            'flex-shrink-0 w-20 h-16 rounded border-2 transition-all ' +
+            (index === currentIndex
+              ? 'border-blue-500 opacity-100'
+              : 'border-zinc-0 opacity-60 hover:opacity-80')
+          "
+        >
+          <img
+            [src]="imageUrl"
+            [alt]="'Thumbnail ' + (index + 1)"
+            class="object-cover w-full h-full rounded"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

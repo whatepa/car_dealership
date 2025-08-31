@@ -1,0 +1,49 @@
+<div class="p-6 mb-6 rounded-lg border shadow-md bg-zinc-800 border-zinc-700">
+  <h2 class="mb-6 text-2xl font-bold text-center text-white">Admin Login</h2>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="p-3 mb-4 text-red-300 bg-red-900 rounded border border-red-600">
+    {{ error }}
+  </div>
+
+  <!-- Login form -->
+  <form (ngSubmit)="handleSubmit($event)">
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-bold text-zinc-300">Username</label>
+      <input
+        type="text"
+        [(ngModel)]="username"
+        name="username"
+        class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+        required
+      />
+    </div>
+
+    <div class="mb-6">
+      <label class="block mb-2 text-sm font-bold text-zinc-300">Password</label>
+      <input
+        type="password"
+        [(ngModel)]="password"
+        name="password"
+        class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+        required
+      />
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="loading"
+      class="px-4 py-2 w-full font-bold text-white bg-blue-500 rounded hover:bg-blue-700 disabled:opacity-50"
+    >
+      {{ loading ? 'Logging in...' : 'Login' }}
+    </button>
+  </form>
+
+  <!-- Demo credentials -->
+  <div class="mt-4 text-sm text-center text-zinc-400">
+    <p>Demo credentials:</p>
+    <p>Username: admin</p>
+    <p>Password: admin123</p>
+  </div>
+</div>
+

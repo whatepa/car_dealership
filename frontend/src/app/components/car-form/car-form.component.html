@@ -1,0 +1,223 @@
+<div class="p-6 mb-6 rounded-lg border shadow-md bg-zinc-800 border-zinc-700">
+  <h2 class="mb-6 text-2xl font-bold text-center text-white">
+    {{ car() ? 'Edit Car' : 'Add New Car' }}
+  </h2>
+
+  <!-- Car form -->
+  <form (ngSubmit)="handleSubmit($event)">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <!-- Brand -->
+      <div>
+        <label class="block mb-2 text-sm font-bold text-zinc-300">Brand</label>
+        <input
+          type="text"
+          name="brand"
+          [(ngModel)]="formData.brand"
+          (input)="handleChange($event)"
+          class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <!-- Model -->
+      <div>
+        <label class="block mb-2 text-sm font-bold text-zinc-300">Model</label>
+        <input
+          type="text"
+          name="model"
+          [(ngModel)]="formData.model"
+          (input)="handleChange($event)"
+          class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <!-- Production Year -->
+      <div>
+        <label class="block mb-2 text-sm font-bold text-zinc-300">Production Year</label>
+        <input
+          type="number"
+          name="productionYear"
+          [(ngModel)]="formData.productionYear"
+          (input)="handleChange($event)"
+          min="1900"
+          max="2025"
+          class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <!-- Price -->
+      <div>
+        <label class="block mb-2 text-sm font-bold text-zinc-300">Price ($)</label>
+        <input
+          type="number"
+          name="price"
+          [(ngModel)]="formData.price"
+          (input)="handleChange($event)"
+          min="0"
+          step="0.01"
+          class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <!-- Fuel Type -->
+      <div>
+        <label class="block mb-2 text-sm font-bold text-zinc-300">Fuel Type</label>
+        <select
+          name="fuelType"
+          [(ngModel)]="formData.fuelType"
+          (change)="handleChange($event)"
+          class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+          required
+        >
+          <option value="">Select fuel type</option>
+          <option value="GASOLINE">Gasoline</option>
+          <option value="DIESEL">Diesel</option>
+          <option value="ELECTRIC">Electric</option>
+          <option value="HYBRID">Hybrid</option>
+          <option value="LPG">LPG</option>
+        </select>
+      </div>
+
+      <!-- Mileage -->
+      <div>
+        <label class="block mb-2 text-sm font-bold text-zinc-300">Mileage (km)</label>
+        <input
+          type="number"
+          name="mileage"
+          [(ngModel)]="formData.mileage"
+          (input)="handleChange($event)"
+          min="0"
+          class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <!-- Engine Capacity -->
+      <div>
+        <label class="block mb-2 text-sm font-bold text-zinc-300">Engine Capacity (L)</label>
+        <input
+          type="number"
+          name="engineCapacity"
+          [(ngModel)]="formData.engineCapacity"
+          (input)="handleChange($event)"
+          min="0"
+          step="0.1"
+          class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <!-- Transmission -->
+      <div>
+        <label class="block mb-2 text-sm font-bold text-zinc-300">Transmission</label>
+        <select
+          name="transmission"
+          [(ngModel)]="formData.transmission"
+          (change)="handleChange($event)"
+          class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+          required
+        >
+          <option value="">Select transmission</option>
+          <option value="MANUAL">Manual</option>
+          <option value="AUTOMATIC">Automatic</option>
+          <option value="SEMI_AUTOMATIC">Semi-Automatic</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="mt-6">
+      <label class="block mb-2 text-sm font-bold text-zinc-300">Description</label>
+      <textarea
+        name="description"
+        [(ngModel)]="formData.description"
+        (input)="handleChange($event)"
+        rows="4"
+        placeholder="Enter car description..."
+        class="p-2 w-full text-black bg-white rounded border border-zinc-600 focus:outline-none focus:border-blue-500"
+      ></textarea>
+    </div>
+
+    <!-- Image upload section -->
+    <div class="mt-6">
+      <h3 class="mb-4 text-lg font-semibold text-white">Images</h3>
+
+      <!-- File input -->
+      <div class="mb-4">
+        <label class="block mb-2 text-sm font-bold text-zinc-300"> Upload Images (Max 12) </label>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          (change)="handleFileChange($event)"
+          class="p-2 w-full text-white rounded border bg-zinc-700 border-zinc-600 focus:outline-none focus:border-blue-500"
+        />
+        <p class="mt-1 text-xs text-zinc-400">Selected: {{ selectedFiles.length }} files</p>
+      </div>
+
+      <!-- Image previews -->
+      <div *ngIf="imagePreviews.length > 0" class="mb-4">
+        <h4 class="mb-2 text-sm font-semibold text-zinc-300">Image Previews</h4>
+        <div class="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-6">
+          <div *ngFor="let preview of imagePreviews; let i = index" class="relative">
+            <img
+              [src]="preview"
+              alt="Preview"
+              class="object-cover w-full h-24 rounded border border-zinc-600"
+            />
+            <button
+              type="button"
+              (click)="handleRemovePreview(i)"
+              class="absolute top-0 right-0 w-6 h-6 text-xs text-white bg-red-500 rounded-full hover:bg-red-600"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Existing gallery images -->
+      <div *ngIf="galleryImages.length > 0" class="mb-4">
+        <h4 class="mb-2 text-sm font-semibold text-zinc-300">Existing Images</h4>
+        <div class="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-6">
+          <div *ngFor="let image of galleryImages; let i = index" class="relative">
+            <img
+              [src]="image"
+              alt="Gallery image"
+              class="object-cover w-full h-24 rounded border border-zinc-600"
+            />
+            <button
+              type="button"
+              (click)="handleRemoveGalleryImage(image)"
+              class="absolute top-0 right-0 w-6 h-6 text-xs text-white bg-red-500 rounded-full hover:bg-red-600"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form buttons -->
+    <div class="flex gap-4 mt-6">
+      <button
+        type="submit"
+        [disabled]="loading || isSubmitting"
+        class="px-6 py-2 text-white bg-green-500 rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ loading ? 'Saving...' : car() ? 'Update Car' : 'Add Car' }}
+      </button>
+
+      <button
+        type="button"
+        (click)="handleCancel()"
+        class="px-6 py-2 text-white bg-gray-500 rounded hover:bg-gray-600"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>
