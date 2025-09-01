@@ -26,20 +26,14 @@ A full-stack car dealership management system with Spring Boot backend and Angul
 
 **Required**: Create a PostgreSQL database named `car_dealership` before running the application.
 
-```sql
-CREATE DATABASE car_dealership;
-```
-
 ### Configuration Setup
 
-**Required**: Fill in the empty fields in `backend/car-dealership/src/main/resources/application.properties` with your own data:
+**Required**: Rename `application.example.properties` to `application.properties` and update the values accordingly.
 
 - Database connection details (username, password)
 - Cloudinary credentials (cloud name, API key, API secret)
 - JWT secret key
 - Other environment-specific configurations
-
-Copy `application.example.properties` to `application.properties` and update the values accordingly.
 
 ## Quick Start
 
